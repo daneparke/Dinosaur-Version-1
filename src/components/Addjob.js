@@ -12,7 +12,7 @@ const Addjob = (props) => {
                     <input onChange={props.compensationInput} className='inputFields' type='text' placeholder='$##.##'></input>
                     <label>Description</label>
                     <input onChange={props.descriptionInput} className='descriptionCont inputFields' type='text' placeholder='Description of Job'></input>
-                    <button onClick={props.submitJob} type="submit" class="btn btnColor">Submit</button>
+                    <button onClick={props.submitJob} type="submit" className="btn btnColor">Submit</button>
                 </div>
             </div>
         </>

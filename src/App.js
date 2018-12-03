@@ -15,13 +15,13 @@ class App extends Component {
       jobListings: []
     }
   }
-  // async componentDidMount() {
-  //   let result = await fetch("/Users/daneparke/playground/galvanize-dinosaurs/dinosaurs1/listings.json")
-  //   let data = await result.json()
-  //   this.setState({
-  //     jobListings: data
-  //   })
-  // }
+  async componentDidMount() {
+    let result = await fetch("http://localhost:3006/listings")
+    let data = await result.json()
+    this.setState({
+      jobListings: data.listings
+    })
+  }
 
   titleInput = (event) => {
     this.setState({
@@ -39,29 +39,42 @@ class App extends Component {
     })
   }
 
-  submitJob = (event) => {
+  submitJob = async (event) => {
     if (this.state.jobTitle.length === 0 || this.state.jobCompensation.length === 0 || this.state.jobDescription.length === 0) {
       alert("Please Enter Username")
     } else {
-      var newJob = {
+      var newListing = {
         id: this.state.jobListings.length + 1,
         title: this.state.jobTitle,
         description: this.state.jobDescription,
         pay: this.state.jobCompensation,
         interested: []
       }
-      this.setState({
-        jobListings: [...this.state.jobListings, newJob],
-        jobTitle: '',
-        jobCompensation: '',
-        jobDescription: '',
+      await fetch('http://localhost:3006/', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newListing)
       })
+        .then(response => response.json())
+        .then((response) => {
+          this.setState({
+            jobTitle: '',
+            jobCompensation: '',
+            jobDescription: '',
+          })
+        })
       var elements = [];
       elements = document.getElementsByClassName('inputFields');
       for (var i = 0; i < elements.length; i++) {
         elements[i].value = '';
       }
-
+      let result = await fetch("http://localhost:3006/listings")
+      let data = await result.json()
+      this.setState({
+        jobListings: data.listings
+      })
     }
   }
 
