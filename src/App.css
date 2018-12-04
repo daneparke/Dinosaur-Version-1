@@ -50,3 +50,6 @@ color: #1B997A;
 .mainCont{
   min-height: 80vh;
 }
+.inputFields{
+  border-radius:4px;
+}

@@ -15,12 +15,8 @@ class App extends Component {
       jobListings: []
     }
   }
-  async componentDidMount() {
-    let result = await fetch("http://localhost:3006/listings")
-    let data = await result.json()
-    this.setState({
-      jobListings: data.listings
-    })
+  componentDidMount() {
+    this.reloadListings()
   }
 
   titleInput = (event) => {
@@ -41,7 +37,7 @@ class App extends Component {
 
   submitJob = async (event) => {
     if (this.state.jobTitle.length === 0 || this.state.jobCompensation.length === 0 || this.state.jobDescription.length === 0) {
-      alert("Please Enter Username")
+      alert("Please Fill Out All Fields")
     } else {
       var newListing = {
         id: this.state.jobListings.length + 1,
@@ -58,6 +54,7 @@ class App extends Component {
         body: JSON.stringify(newListing)
       })
         .then(response => response.json())
+        .then(() => this.reloadListings())
         .then((response) => {
           this.setState({
             jobTitle: '',
@@ -65,19 +62,24 @@ class App extends Component {
             jobDescription: '',
           })
         })
-      var elements = [];
-      elements = document.getElementsByClassName('inputFields');
-      for (var i = 0; i < elements.length; i++) {
-        elements[i].value = '';
-      }
-      let result = await fetch("http://localhost:3006/listings")
-      let data = await result.json()
-      this.setState({
-        jobListings: data.listings
-      })
+
     }
   }
-
+  resetInputValues = () => {
+    var elements = [];
+    elements = document.getElementsByClassName('inputFields');
+    for (var i = 0; i < elements.length; i++) {
+      elements[i].value = '';
+    }
+  }
+  reloadListings = async () => {
+    let result = await fetch("http://localhost:3006/listings")
+    let data = await result.json()
+    this.setState({
+      jobListings: data.listings
+    })
+    return data
+  }
   render() {
     return (
       <>
@@ -85,7 +87,7 @@ class App extends Component {
         <div className='mainCont container'>
           <div className='bodyCont row'>
             <Joblist jobListings={this.state.jobListings} />
-            <Addjob jobDescription={this.state.jobCompensation} jobCompensation={this.state.jobCompensation} jobTitle={this.state.jobTitle} submitJob={this.submitJob} descriptionInput={this.descriptionInput} compensationInput={this.compensationInput} titleInput={this.titleInput} />
+            <Addjob {...this.state} jobDescription={this.state.jobCompensation} jobCompensation={this.state.jobCompensation} jobTitle={this.state.jobTitle} submitJob={this.submitJob} descriptionInput={this.descriptionInput} compensationInput={this.compensationInput} titleInput={this.titleInput} />
           </div>
         </div>
         <Footer />
